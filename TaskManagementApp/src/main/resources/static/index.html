@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(ellipse at top left, #232946 60%, #121629 100%);
+            color: #f4f4f4;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: rgba(35, 41, 70, 0.95);
+            padding: 1rem 0 1rem 0;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 8px 0 #23294633;
+        }
+        .navbar-brand {
+            color: #fff;
+            font-weight: bold;
+            font-size: 2rem;
+            letter-spacing: 2px;
+        }
+        .navbar-nav {
+            margin: 0 auto;
+            float: none;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        .navbar-nav .nav-link {
+            color: #b8c1ec;
+            font-weight: 500;
+            margin: 0 1.2rem;
+            transition: color 0.2s;
+        }
+        .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
+            color: #3a86ff;
+        }
+        .hero {
+            text-align: center;
+            padding: 120px 20px 40px 20px;
+        }
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+        .hero p {
+            color: #b8c1ec;
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+        }
+        .hero .btn {
+            margin: 0 10px 10px 10px;
+            font-size: 1.1rem;
+            padding: 0.75rem 2rem;
+            border-radius: 30px;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #3a86ff 0%, #4361ee 100%);
+            border: none;
+        }
+        .btn-secondary {
+            background: #232946;
+            color: #b8c1ec;
+            border: 1px solid #3a86ff;
+        }
+        .features-section {
+            margin-top: 60px;
+            margin-bottom: 40px;
+        }
+        .feature-card {
+            background: #232946;
+            border: 1px solid #3a86ff33;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px 0 #3a86ff22;
+            color: #fff;
+            margin-bottom: 30px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .feature-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 8px 32px 0 #3a86ff55;
+        }
+        .feature-card img {
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+            height: 180px;
+            object-fit: cover;
+            width: 100%;
+        }
+        .feature-card .card-body {
+            padding: 1.5rem;
+        }
+        .feature-card .card-title {
+            color: #3a86ff;
+            font-weight: 600;
+        }
+        .info-section {
+            background: #1a1a2e;
+            border-radius: 18px;
+            margin: 40px auto;
+            padding: 40px 30px;
+            max-width: 1000px;
+            box-shadow: 0 2px 16px 0 #3a86ff22;
+        }
+        .info-section h2 {
+            color: #3a86ff;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        .info-section p, .info-section li {
+            color: #b8c1ec;
+            font-size: 1.1rem;
+        }
+        /* How it Works Styling */
+        .how-works-steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 30px;
+        }
+        .how-works-step {
+            flex: 1 1 200px;
+            background: #232946;
+            border-radius: 14px;
+            padding: 30px 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 2px 12px 0 #3a86ff22;
+        }
+        .how-works-step i {
+            font-size: 2.5rem;
+            color: #3a86ff;
+            margin-bottom: 15px;
+        }
+        .how-works-step strong {
+            color: #fff;
+            display: block;
+            margin-bottom: 8px;
+        }
+        /* Why Choose Us Styling */
+        .why-choose-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: space-between;
+        }
+        .why-choose-item {
+            flex: 1 1 200px;
+            background: #232946;
+            border-radius: 14px;
+            padding: 30px 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 2px 12px 0 #3a86ff22;
+        }
+        .why-choose-item i {
+            font-size: 2.2rem;
+            color: #3a86ff;
+            margin-bottom: 12px;
+        }
+        .why-choose-item strong {
+            color: #fff;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .testimonials-section {
+            background: #232946;
+            border-radius: 18px;
+            margin: 40px auto;
+            padding: 40px 30px;
+            max-width: 1000px;
+            box-shadow: 0 2px 16px 0 #3a86ff22;
+        }
+        .testimonial-card {
+            background: #1a1a2e;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px 0 #3a86ff22;
+            color: #fff;
+            margin-bottom: 30px;
+            padding: 24px 20px;
+            border-left: 4px solid #3a86ff;
+        }
+        .testimonial-author {
+            color: #3a86ff;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        .pricing-section {
+            background: #232946;
+            border-radius: 18px;
+            margin: 40px auto;
+            padding: 40px 30px;
+            max-width: 1100px;
+            box-shadow: 0 2px 16px 0 #3a86ff22;
+        }
+        .pricing-card {
+            background: #1a1a2e;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px 0 #3a86ff22;
+            color: #fff;
+            margin-bottom: 30px;
+            padding: 32px 20px;
+            border: 1px solid #3a86ff33;
+            text-align: center;
+        }
+        .pricing-card .price {
+            font-size: 2.2rem;
+            color: #3a86ff;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .pricing-card ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        .pricing-card ul li {
+            color: #b8c1ec;
+            margin-bottom: 8px;
+        }
+        .about-section {
+            background: #1a1a2e;
+            border-radius: 18px;
+            margin: 40px auto;
+            padding: 40px 30px;
+            max-width: 1000px;
+            box-shadow: 0 2px 16px 0 #3a86ff22;
+        }
+        .about-section h2 {
+            color: #3a86ff;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        .about-section p {
+            color: #b8c1ec;
+            font-size: 1.1rem;
+        }
+        .contact-section {
+            background: #232946;
+            border-radius: 18px;
+            margin: 40px auto;
+            padding: 40px 30px;
+            max-width: 1000px;
+            box-shadow: 0 2px 16px 0 #3a86ff22;
+        }
+        .contact-section h2 {
+            color: #3a86ff;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        .contact-section label {
+            color: #b8c1ec;
+        }
+        .contact-section .form-control {
+            background: #1a1a2e;
+            color: #fff;
+            border: 1px solid #3a86ff33;
+        }
+        .footer {
+            background: #121629;
+            color: #b8c1ec;
+            text-align: center;
+            padding: 30px 10px 10px 10px;
+            margin-top: 60px;
+            font-size: 1rem;
+        }
+        @media (max-width: 991px) {
+            .navbar-nav .nav-link { margin-right: 0.7rem; }
+            .navbar-nav { flex-wrap: wrap; }
+        }
+        @media (max-width: 767px) {
+            .hero { padding: 80px 10px 20px 10px; }
+            .features-section { margin-top: 30px; }
+            .info-section, .testimonials-section, .pricing-section, .about-section, .contact-section { padding: 20px 5px; }
+            .how-works-steps, .why-choose-list { flex-direction: column; gap: 0; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#hero">Taskify</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="#hero">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#howitworks">How it Works</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#whychoose">Why Choose Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <section class="hero" id="hero">
+        <h1>Organize your work,<br>One task at a time</h1>
+        <p>Boost your productivity and manage your team's workflow with our modern, intuitive dashboard.<br>All your tasks, one place, anytime.</p>
+        <a href="signup.html" class="btn btn-primary">Get Started</a>
+    </section>
+    <section class="about-section" id="about">
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-4 mb-md-0 text-center">
+                <img src="https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=500&q=80" alt="Task Management Illustration" style="max-width: 90%; border-radius: 16px; box-shadow: 0 4px 24px 0 #3a86ff22;">
+            </div>
+            <div class="col-md-6">
+                <h2 style="font-size:2.3rem; font-weight:800; color:#fff;">About <span style="color:#3a86ff;">Taskify</span></h2>
+                <p style="font-size:1.2rem; color:#b8c1ec;">Taskify is a modern, user-friendly task management platform designed to help individuals and teams stay organized and productive. Our mission is to simplify task management with a beautiful interface and powerful features. Whether you're a solo user or a large team, Taskify adapts to your workflow and helps you get more done, every day.</p>
+                <div class="row mt-4">
+                    <div class="col-12 mb-3">
+                        <div style="background:#232946; border-left:4px solid #3a86ff; border-radius:10px; padding:18px 20px;">
+                            <strong style="color:#3a86ff; font-size:1.1rem;">Our Mission</strong>
+                            <div style="color:#b8c1ec;">To simplify productivity for everyone with a beautiful, intuitive, and powerful task management experience.</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div style="background:#232946; border-left:4px solid #4361ee; border-radius:10px; padding:18px 20px;">
+                            <strong style="color:#4361ee; font-size:1.1rem;">Our Vision</strong>
+                            <div style="color:#b8c1ec;">To empower people and organizations to achieve more by making productivity simple, accessible, and enjoyable.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="container features-section" id="features">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card feature-card">
+                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" alt="Create Tasks">
+                    <div class="card-body">
+                        <h5 class="card-title">Create Tasks</h5>
+                        <p class="card-text">Easily create and manage your tasks with our intuitive interface. Stay on top of your work and never miss a deadline.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card">
+                    <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" alt="View Tasks">
+                    <div class="card-body">
+                        <h5 class="card-title">View & Sort Tasks</h5>
+                        <p class="card-text">View all your tasks in one place. Use search and sorting to quickly find what you need and keep your workflow organized.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card">
+                    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" alt="Edit Tasks">
+                    <div class="card-body">
+                        <h5 class="card-title">Edit & Update</h5>
+                        <p class="card-text">Edit, update, or delete your tasks as your priorities change. Stay flexible and in control of your productivity.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="info-section" id="howitworks">
+        <h2>How it Works</h2>
+        <div class="how-works-steps">
+            <div class="how-works-step">
+                <i class="fas fa-user-plus"></i>
+                <strong>Sign Up or Login</strong>
+                <span>Create your account or log in to access your dashboard (coming soon!).</span>
+            </div>
+            <div class="how-works-step">
+                <i class="fas fa-plus-circle"></i>
+                <strong>Create Tasks</strong>
+                <span>Add new tasks with a title and description.</span>
+            </div>
+            <div class="how-works-step">
+                <i class="fas fa-tasks"></i>
+                <strong>View & Manage</strong>
+                <span>See all your tasks, search, sort, edit, or delete as needed.</span>
+            </div>
+            <div class="how-works-step">
+                <i class="fas fa-check-circle"></i>
+                <strong>Stay Organized</strong>
+                <span>Keep your workflow efficient and never miss a deadline.</span>
+            </div>
+        </div>
+    </section>
+    <section class="info-section" id="whychoose">
+        <h2>Why Choose Taskify?</h2>
+        <div class="why-choose-list">
+            <div class="why-choose-item">
+                <i class="fas fa-laptop-code"></i>
+                <strong>Modern UI</strong>
+                <span>Enjoy a beautiful, intuitive, and responsive interface.</span>
+            </div>
+            <div class="why-choose-item">
+                <i class="fas fa-bolt"></i>
+                <strong>Productivity Focused</strong>
+                <span>Designed to help you and your team stay on track.</span>
+            </div>
+            <div class="why-choose-item">
+                <i class="fas fa-user-friends"></i>
+                <strong>Easy to Use</strong>
+                <span>No learning curve—just sign up and start managing your tasks.</span>
+            </div>
+            <div class="why-choose-item">
+                <i class="fas fa-shield-alt"></i>
+                <strong>Secure & Reliable</strong>
+                <span>Your data is safe and always accessible (authentication coming soon).</span>
+            </div>
+        </div>
+    </section>
+    <section class="pricing-section" id="pricing">
+        <h2 class="text-center mb-5">Pricing</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="pricing-card">
+                    <div class="price">Free</div>
+                    <ul>
+                        <li>Unlimited tasks</li>
+                        <li>Basic search & sort</li>
+                        <li>Dark mode</li>
+                        <li>Email support</li>
+                    </ul>
+                    <button class="btn btn-primary" disabled>Current Plan</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="pricing-card">
+                    <div class="price">Pro <span style="font-size:1.2rem; color:#b8c1ec;">$5/mo</span></div>
+                    <ul>
+                        <li>Everything in Free</li>
+                        <li>Team collaboration</li>
+                        <li>Priority support</li>
+                        <li>Advanced analytics</li>
+                    </ul>
+                    <button class="btn btn-primary" disabled>Coming Soon</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="pricing-card">
+                    <div class="price">Enterprise</div>
+                    <ul>
+                        <li>Everything in Pro</li>
+                        <li>Custom integrations</li>
+                        <li>Dedicated account manager</li>
+                        <li>Custom SLAs</li>
+                    </ul>
+                    <button class="btn btn-primary" disabled>Contact Us</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="testimonials-section" id="testimonials">
+        <h2 class="text-center mb-5">What Our Users Say</h2>
+        <div class="row justify-content-center align-items-stretch">
+            <div class="col-md-4 d-flex align-items-stretch">
+                <div class="testimonial-card w-100 d-flex flex-column">
+                    <p class="testimonial-text" style="flex:1;">"Taskify has completely changed the way I organize my work. The interface is beautiful and easy to use!"</p>
+                    <div class="testimonial-author mt-auto">— Alex P., Project Manager</div>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex align-items-stretch">
+                <div class="testimonial-card w-100 d-flex flex-column">
+                    <p class="testimonial-text" style="flex:1;">"I love the dark mode and the productivity features. My team is more efficient than ever!"</p>
+                    <div class="testimonial-author mt-auto">— Jamie L., Team Lead</div>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex align-items-stretch">
+                <div class="testimonial-card w-100 d-flex flex-column">
+                    <p class="testimonial-text" style="flex:1;">"The best task management app I've used. The search and sort features are a lifesaver."</p>
+                    <div class="testimonial-author mt-auto">— Morgan S., Developer</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="contact-section" id="contact">
+        <h2>Contact & Support</h2>
+        <div class="row">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <form>
+                    <div class="mb-3">
+                        <label for="contactName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="contactName" placeholder="Your Name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="contactEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="contactEmail" placeholder="you@example.com">
+                    </div>
+                    <div class="mb-3">
+                        <label for="contactMessage" class="form-label">Message</label>
+                        <textarea class="form-control" id="contactMessage" rows="4" placeholder="How can we help?"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" disabled>Send Message (Coming Soon)</button>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <strong>Email:</strong> <a href="mailto:support@taskify.com" style="color:#3a86ff;">support@taskify.com</a>
+                </div>
+                <div class="mb-3">
+                    <strong>Phone:</strong> <span style="color:#b8c1ec;">+1 (555) 123-4567</span>
+                </div>
+                <div class="mb-3">
+                    <strong>Address:</strong> <span style="color:#b8c1ec;">123 Productivity Ave, Suite 100, Tech City</span>
+                </div>
+                <div class="mb-3">
+                    <strong>Support Hours:</strong> <span style="color:#b8c1ec;">Mon-Fri, 9am - 6pm</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+        <div>Contact us: <a href="mailto:support@taskify.com" style="color:#3a86ff;">support@taskify.com</a> | &copy; 2024 Taskify. All rights reserved.</div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

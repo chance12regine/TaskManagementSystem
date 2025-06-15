@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f6fb;
+            color: #232946;
+            min-height: 100vh;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 260px;
+            background: #232946;
+            color: white;
+            padding: 30px 20px 20px 20px;
+            box-shadow: 2px 0 16px 0 #3a86ff22;
+            z-index: 100;
+            transition: width 0.3s;
+        }
+        .sidebar .profile {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .sidebar .profile img {
+            border-radius: 50%;
+            width: 64px;
+            height: 64px;
+            margin-bottom: 0.5rem;
+        }
+        .sidebar .profile .email {
+            font-size: 0.95em;
+            color: #b8c1ec;
+        }
+        .sidebar .nav-link {
+            color: #b8c1ec;
+            font-size: 1.1rem;
+            margin-bottom: 1.2rem;
+            border-radius: 8px;
+            padding: 10px 18px;
+            transition: background 0.2s, color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .sidebar .nav-link.active, .sidebar .nav-link:hover {
+            background: linear-gradient(90deg, #3a86ff 0%, #4361ee 100%);
+            color: #fff;
+        }
+        .sidebar .nav-link i {
+            margin-right: 10px;
+        }
+        .main-content {
+            margin-left: 260px;
+            padding: 40px 30px 30px 30px;
+            min-height: 100vh;
+            background: #f4f6fb;
+            transition: margin-left 0.3s;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .topbar h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #232946;
+        }
+        .stats-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px 0 #3a86ff11;
+            padding: 24px 20px;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 2rem;
+            justify-content: flex-start;
+        }
+        .stats-item {
+            text-align: center;
+        }
+        .stats-item .count {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #3a86ff;
+        }
+        .stats-item .label {
+            color: #232946;
+            font-size: 1rem;
+        }
+        .card, .form-control, .form-select {
+            background: #fff !important;
+            color: #232946 !important;
+            border-radius: 12px !important;
+            border: 1px solid #3a86ff33 !important;
+            box-shadow: 0 2px 12px 0 #3a86ff11;
+        }
+        .form-label {
+            color: #232946;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #3a86ff 0%, #4361ee 100%);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 30px;
+            padding: 0.5rem 2rem;
+        }
+        .btn-secondary {
+            background: #f4f6fb;
+            color: #3a86ff;
+            border: 1px solid #3a86ff;
+            border-radius: 30px;
+            padding: 0.5rem 2rem;
+        }
+        .task {
+            margin-bottom: 16px;
+            padding: 18px 20px;
+            border: 1px solid #3a86ff33;
+            border-radius: 14px;
+            background: #fff;
+            box-shadow: 0 2px 12px 0 #3a86ff11;
+            color: #232946;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .task:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 8px 32px 0 #3a86ff33;
+        }
+        .task .task-info {
+            flex: 1;
+        }
+        .task .badge {
+            font-size: 0.95em;
+            margin-left: 10px;
+        }
+        .btn { margin-right: 8px; }
+        .modal-content {
+            background: #fff;
+            color: #232946;
+            border-radius: 14px;
+        }
+        .modal-header, .modal-footer {
+            background: #f4f6fb;
+            border: none;
+        }
+        @media (max-width: 991px) {
+            .sidebar { width: 100%; height: auto; position: relative; box-shadow: none; }
+            .main-content { margin-left: 0; padding: 20px 5vw; }
+        }
+        @media (max-width: 767px) {
+            .main-content { padding: 10px 2vw; }
+            .sidebar { padding: 20px 10px; }
+            .stats-card { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="profile mb-4 text-center">
+            <img src="https://ui-avatars.com/api/?name=User" class="rounded-circle mb-2" width="60" alt="User">
+            <div style="font-weight:600;">Welcome!</div>
+            <div class="email" id="userEmail">user@example.com</div>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" id="viewTasksLink"><i class="fas fa-tasks"></i>Tasks</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="newTaskLink"><i class="fas fa-plus"></i>New Task</a>
+            </li>
+            <li class="nav-item mt-4">
+                <a class="nav-link text-danger" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i>Logout</a>
+            </li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="topbar">
+            <h1>Dashboard</h1>
+            <div>
+                <input type="text" class="form-control d-inline-block" id="searchInput" placeholder="Search tasks..." style="width: 220px;">
+            </div>
+        </div>
+        <!-- Stat Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="mb-2"><i class="fas fa-tasks fa-2x text-primary"></i></div>
+                        <h3 id="totalTasks" class="fw-bold mb-0">0</h3>
+                        <div class="text-muted">Total Tasks</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="mb-2"><i class="fas fa-hourglass-half fa-2x text-secondary"></i></div>
+                        <h3 id="pendingTasks" class="fw-bold mb-0">0</h3>
+                        <div class="text-muted">Pending</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="mb-2"><i class="fas fa-check-circle fa-2x text-success"></i></div>
+                        <h3 id="completedTasks" class="fw-bold mb-0">0</h3>
+                        <div class="text-muted">Completed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="newTaskSection" style="display: none;">
+            <h2 class="mb-4">Create New Task</h2>
+            <div class="card p-4 mb-4">
+                <form id="createTaskForm">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" required>
+                            <option value="false">Pending</option>
+                            <option value="true">Completed</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Task</button>
+                    <button type="button" class="btn btn-secondary" id="viewTasksButton">View Tasks</button>
+                </form>
+            </div>
+        </div>
+        <div id="viewTasksSection" style="display: block;">
+            <h2 class="mb-4">Your Tasks</h2>
+            <div class="card p-4 mb-4">
+                <div class="mb-3 d-flex align-items-center">
+                    <label for="filterStatus" class="form-label me-2 mb-0">Filter:</label>
+                    <select class="form-select w-auto" id="filterStatus">
+                        <option value="all">All</option>
+                        <option value="completed">Completed</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </div>
+                <div id="tasks"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Edit Task Modal -->
+    <div class="modal fade" id="editTaskModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editTaskForm">
+                        <input type="hidden" id="editTaskId">
+                        <div class="mb-3">
+                            <label for="editTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="editTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="editDescription" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editStatus" class="form-label">Status</label>
+                            <select class="form-select" id="editStatus" required>
+                                <option value="false">Pending</option>
+                                <option value="true">Completed</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // --- User Profile (set email if available) ---
+        const userEmail = localStorage.getItem('userEmail');
+        if (userEmail) {
+            document.getElementById('userEmail').textContent = userEmail;
+        }
+
+        let tasks = [];
+        // Fetch and display tasks
+        function fetchTasks() {
+            const token = localStorage.getItem('jwt');
+            fetch('/api/tasks', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Unauthorized or error');
+                return response.json();
+            })
+            .then(data => {
+                tasks = data;
+                displayTasks();
+                updateStats();
+            })
+            .catch(err => {
+                alert(err.message);
+            });
+        }
+        // Display tasks with filtering, sorting, and search
+        function displayTasks() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filterStatus = document.getElementById('filterStatus').value;
+            let filteredTasks = tasks.filter(task =>
+                task.title.toLowerCase().includes(searchTerm) ||
+                task.description.toLowerCase().includes(searchTerm)
+            );
+            if (filterStatus === 'completed') {
+                filteredTasks = filteredTasks.filter(task => task.completed);
+            } else if (filterStatus === 'pending') {
+                filteredTasks = filteredTasks.filter(task => !task.completed);
+            }
+            const tasksDiv = document.getElementById('tasks');
+            tasksDiv.innerHTML = '';
+            filteredTasks.forEach(task => {
+                const badge = task.completed
+                    ? '<span class="badge bg-success">Completed</span>'
+                    : '<span class="badge bg-warning text-dark">Pending</span>';
+                const taskElement = document.createElement('div');
+                taskElement.className = 'task';
+                taskElement.innerHTML = `
+                    <div class="task-info">
+                        <h5 class="mb-1">${task.title} ${badge}</h5>
+                        <p class="mb-1">${task.description}</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-warning btn-sm" onclick="openEditModal(${task.id}, '${task.title.replace(/'/g, "&#39;")}', '${task.description.replace(/'/g, "&#39;")}', ${task.completed})"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteTask(${task.id})"><i class="fas fa-trash"></i> Delete</button>
+                    </div>
+                `;
+                tasksDiv.appendChild(taskElement);
+            });
+        }
+        // Update stats/summary
+        function updateStats() {
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.completed).length;
+            const pending = total - completed;
+            document.getElementById('totalTasks').textContent = total;
+            document.getElementById('completedTasks').textContent = completed;
+            document.getElementById('pendingTasks').textContent = pending;
+        }
+        // Create a new task
+        document.getElementById('createTaskForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const completed = document.getElementById('status').value === 'true';
+            const token = localStorage.getItem('jwt');
+            fetch('/api/tasks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ title, description, completed })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Unauthorized or error');
+                return response.json();
+            })
+            .then(() => {
+                fetchTasks();
+                document.getElementById('createTaskForm').reset();
+                document.getElementById('viewTasksSection').style.display = 'block';
+                document.getElementById('newTaskSection').style.display = 'none';
+            })
+            .catch(err => {
+                alert(err.message);
+            });
+        });
+        // Delete a task
+        function deleteTask(id) {
+            const token = localStorage.getItem('jwt');
+            fetch(`/api/tasks/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+            .then(() => fetchTasks())
+            .catch(err => {
+                alert(err.message);
+            });
+        }
+        // Open edit modal
+        function openEditModal(id, title, description, completed) {
+            document.getElementById('editTaskId').value = id;
+            document.getElementById('editTitle').value = title;
+            document.getElementById('editDescription').value = description;
+            document.getElementById('editStatus').value = completed ? 'true' : 'false';
+            new bootstrap.Modal(document.getElementById('editTaskModal')).show();
+        }
+        // Update a task
+        document.getElementById('editTaskForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const id = document.getElementById('editTaskId').value;
+            const title = document.getElementById('editTitle').value;
+            const description = document.getElementById('editDescription').value;
+            const completed = document.getElementById('editStatus').value === 'true';
+            const token = localStorage.getItem('jwt');
+            fetch(`/api/tasks/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ title, description, completed })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Unauthorized or error');
+                return response.json();
+            })
+            .then(() => {
+                fetchTasks();
+                bootstrap.Modal.getInstance(document.getElementById('editTaskModal')).hide();
+            })
+            .catch(err => {
+                alert(err.message);
+            });
+        });
+        // Filter and sort tasks
+        document.getElementById('searchInput').addEventListener('input', displayTasks);
+        document.getElementById('filterStatus').addEventListener('change', displayTasks);
+        // Toggle sections
+        document.getElementById('newTaskLink').addEventListener('click', function() {
+            document.getElementById('newTaskSection').style.display = 'block';
+            document.getElementById('viewTasksSection').style.display = 'none';
+            document.querySelector('.nav-link.active').classList.remove('active');
+            document.getElementById('newTaskLink').classList.add('active');
+        });
+        document.getElementById('viewTasksLink').addEventListener('click', function() {
+            document.getElementById('newTaskSection').style.display = 'none';
+            document.getElementById('viewTasksSection').style.display = 'block';
+            document.querySelector('.nav-link.active').classList.remove('active');
+            document.getElementById('viewTasksLink').classList.add('active');
+            fetchTasks();
+        });
+        document.getElementById('viewTasksButton').addEventListener('click', function() {
+            document.getElementById('newTaskSection').style.display = 'none';
+            document.getElementById('viewTasksSection').style.display = 'block';
+            document.querySelector('.nav-link.active').classList.remove('active');
+            document.getElementById('viewTasksLink').classList.add('active');
+            fetchTasks();
+        });
+        // Initial fetch
+        fetchTasks();
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('jwt');
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html> 
